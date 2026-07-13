@@ -1,0 +1,59 @@
+# Application Name
+spring:
+  application:
+    name: "github-prometheus-exporter"
+
+# Spring boot actuator configuration.
+# see: https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+# Spring boot logging configuration.
+# see: https://docs.spring.io/spring-boot/docs/2.1.13.RELEASE/reference/html/boot-features-logging.html
+logging:
+  level:
+    root: INFO
+
+# Internal in memory cache configuration
+cache:
+  configuration:
+    clear:
+      # Cron expression to evict cache (e.g. 0 0 0 * * ? => every day at midnight)
+      cron: "0 0 0 * * ?"
+
+#Rate limit configuration https://resilience4j.readme.io/docs/ratelimiter
+# Used for Gitlab https://docs.gitlab.com/ee/administration/settings/rate_limits.html
+resilience4j:
+  ratelimiter:
+    instances:
+      gitlab-get:
+        limit-for-period: 300
+        limit-refresh-period: 1m
+        timeout-duration: 50s
+
+
+# Gitlab prometheus exporter configuration
+prometheus-exporter:
+  update-duration: PT1M
+  update-initial-delay-duration: PT5S
+
+  github:
+    api:
+     # Github web api url
+      url: "https://api.github.com"
+     # Request page size
+      page-size: 10
+      authentication:
+      # Gitlab user authentication token
+        token: ${GITHUB_TOKEN}
+
+    project-or-groups:
+      - path: "oezcanguezelarslan-arch"
+
+    branches:
+      - main
+      - develop
+      - renovate/all-dependencies
