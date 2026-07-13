@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   run-build:
-    uses: "oezcan-guezelsarslan/cicdtemplates/.github/workflows/ci-maven.yml@v1.1.0"
+    uses: "oezcan-guezelsarslan/cicdtemplates/.github/workflows/ci-maven.yml@v1.2.0"
     permissions:
       contents: write
       packages: write
