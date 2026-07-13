@@ -9,14 +9,14 @@
     <properties>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>2.3.10</kotlin.version>
-        <cucumber.version>7.34.2</cucumber.version>
-        <spring-boot.version>4.0.7</spring-boot.version>
-        <spring-cloud.version>2025.1.1</spring-cloud.version>
+        <kotlin.version>2.4.0</kotlin.version>
+        <cucumber.version>7.34.4</cucumber.version>
+        <spring-boot.version>4.1.0</spring-boot.version>
+        <spring-cloud.version>2025.1.2</spring-cloud.version>
         <tomcat.version>11.0.22</tomcat.version>
         <resilience4j.version>2.4.0</resilience4j.version>
         <reflections.version>0.10.2</reflections.version>
-        <bouncycastle.version>1.84</bouncycastle.version>
+        <bouncycastle.version>1.85</bouncycastle.version>
         <start-class>de.ba.ApplicationKt</start-class>
         <projectType>application</projectType>
     </properties>
@@ -206,7 +206,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.14</version>
+                <version>0.8.15</version>
                 <executions>
                     <execution>
                         <goals>
