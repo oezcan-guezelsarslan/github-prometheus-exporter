@@ -18,6 +18,8 @@ permissions:
 jobs:
   run-build:
     uses: "oezcan-guezelsarslan/cicdtemplates/.github/workflows/ci-maven.yml@v1.2.0"
+    with:
+      target-branch: ${{ github.head_ref || github.ref_name }}
     permissions:
       contents: write
       packages: write
