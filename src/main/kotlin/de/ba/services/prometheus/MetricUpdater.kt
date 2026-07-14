@@ -1,10 +1,10 @@
 package de.ba.services.prometheus
 
-import de.ba.services.github.configuration.GithubConfiguration
+import de.ba.services.GithubDataManager
+import de.ba.services.github.GithubService
 import de.ba.services.prometheus.exporters.MetricsExporter
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.MultiGauge
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -16,17 +16,10 @@ import java.time.ZoneId
 class MetricUpdater(
     private val metricExporters: List<MetricsExporter>,
     private val meterRegistry: MeterRegistry,
-    private val githubConfiguration: GithubConfiguration,
+    private val githubDataManager: GithubDataManager,
+    private val githubService: GithubService
 ) {
     private var lastScrapeTimeStamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
-
-    private val githubCiVersion: MultiGauge = MultiGauge.builder("github_ci_version")
-        .description(
-            "Github version information."
-        )
-        .register(meterRegistry)
-
-    private var gitlabVersion = "N/A"
 
     @PostConstruct
     fun postConstruct() {
@@ -42,9 +35,15 @@ class MetricUpdater(
         initialDelayString = $$"${prometheus-exporter.update-initial-delay-duration}"
     )
     fun updateAll() {
+        githubDataManager.clearAll()
+        val projects = githubService.fetchAllProjects()
+        metricExporters.sortedBy { it.order() }.forEach { exporter ->
+            projects.forEach { project ->
+                exporter.updateData(project = project)
+            }
+            exporter.updateMetrics()
+        }
         lastScrapeTimeStamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
         logger.info("End update all metrics")
     }
-
-
 }

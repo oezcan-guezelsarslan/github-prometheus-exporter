@@ -11,13 +11,9 @@ import org.springframework.context.annotation.PropertySource
 @ConfigurationProperties(prefix = "prometheus-exporter.github")
 class GithubConfiguration {
     var api: Api = Api()
-    var projects: List<Project> = emptyList()
+    var projects: List<String> = emptyList()
     var branches: List<String> = emptyList()
 }
 
-class Project {
-    var path: String = ""
-    var template: String = ""
-}
 
 

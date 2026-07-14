@@ -48,12 +48,15 @@ prometheus-exporter:
       page-size: 10
       authentication:
       # Gitlab user authentication token
-        token: ${GITHUB_TOKEN}
+        token: "${token}"
 
-    project-or-groups:
-      - path: "oezcanguezelarslan-arch"
+    projects:
+      - "oezcan-guezelsarslan/renovatebot"
+      - "oezcan-guezelsarslan/github-prometheus-exporter"
+      - "oezcan-guezelsarslan/javaImage"
+      - "oezcan-guezelsarslan/HelmChartDocker"
 
     branches:
       - main
       - develop
-      - renovate/all-dependencies
+      - renovate/all_dependencies
