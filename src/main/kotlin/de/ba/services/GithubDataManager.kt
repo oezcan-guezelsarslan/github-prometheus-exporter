@@ -1,5 +1,6 @@
 package de.ba.services
 
+import de.ba.services.github.client.MergeRequest
 import de.ba.services.github.client.Pipeline
 import de.ba.services.github.client.Project
 import org.springframework.stereotype.Service
@@ -20,6 +21,13 @@ class GithubDataManager {
         }
     }
 
+    fun addMergeRequest(project: Project, mergeRequest: MergeRequest) {
+        val projectData = getOrCreateProject(project)
+        if (projectData.mergeRequests.none { it.id == mergeRequest.id }) {
+            projectData.mergeRequests.add(mergeRequest)
+        }
+    }
+
 
     fun getAllData() = _data.values.toList()
 
@@ -35,4 +43,5 @@ data class PipelineContainer(
 data class ProjectData(
     val project: Project,
     val pipelines: MutableList<PipelineContainer> = mutableListOf(),
+    val mergeRequests: MutableList<MergeRequest> = mutableListOf(),
 )

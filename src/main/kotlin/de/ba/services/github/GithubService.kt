@@ -1,6 +1,7 @@
 package de.ba.services.github
 
 import de.ba.services.github.client.GitHubClient
+import de.ba.services.github.client.MergeRequest
 import de.ba.services.github.client.Pipeline
 import de.ba.services.github.client.Project
 import de.ba.services.github.configuration.GithubConfiguration
@@ -34,6 +35,13 @@ class GithubService(
         val token = "Bearer ${githubConfiguration.api.authentication.token}"
         val response = gitHubClient.latestPipeline(token = token, projectId = projectId, branch = branch)
         return response.pipelines.firstOrNull()
+    }
+
+
+    fun mergeRequests(projectId: String): List<MergeRequest> {
+        val token = "Bearer ${githubConfiguration.api.authentication.token}"
+        val response = gitHubClient.mergeRequests(token = token, projectId = projectId)
+        return response.toList()
     }
 
     private fun fetchAllUserProjects(authToken: String, pageSize: Int): List<Project> {

@@ -23,12 +23,18 @@ interface GitHubClient {
         @RequestHeader("Authorization") token: String,
         @PathVariable("id") projectId: String,
         @RequestParam("branch") branch: String,
-        @RequestParam("per_page") page: Int=1
+        @RequestParam("per_page") page: Int = 1
     ): Run
 
+    @GetMapping("/repositories/{id}/pulls")
+    fun mergeRequests(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable("id") projectId: String, // "open", "closed", or "all"
+        @RequestParam("per_page", defaultValue = "30") perPage: Int=30,
+        @RequestParam("page", defaultValue = "1") page: Int=1
+    ): List<MergeRequest>
+
 }
-
-
 
 data class Project(
     @param:JsonProperty("id")
@@ -43,11 +49,36 @@ data class Project(
     val path: String,
 )
 
+data class MergeRequest(
+    @param:JsonProperty("id")
+    @field:JsonProperty("id")
+    val id: String,
+
+    @param:JsonProperty("state")
+    @field:JsonProperty("state")
+    val state: String, // e.g., "open" or "closed"
+
+    @param:JsonProperty("head")
+    @field:JsonProperty("head")
+    val sourceBranch: BranchInfo, // Contains source branch details
+
+    @param:JsonProperty("base")
+    @field:JsonProperty("base")
+    val targetBranch: BranchInfo  // Contains target branch details
+)
+
+data class BranchInfo(
+    @param:JsonProperty("ref")
+    @field:JsonProperty("ref")
+    val name: String,
+)
+
 data class Run(
     @param:JsonProperty("workflow_runs")
     @field:JsonProperty("workflow_runs")
     val pipelines: List<Pipeline>,
 )
+
 data class Pipeline(
     @param:JsonProperty("id")
     @field:JsonProperty("id")

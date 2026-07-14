@@ -1,20 +1,49 @@
 package de.ba.services.utils
 
 import de.ba.services.ProjectData
-import de.ba.services.github.client.Pipeline
 import de.ba.services.github.client.Project
 import io.micrometer.core.instrument.MultiGauge.Row
 import io.micrometer.core.instrument.Tag
 import io.micrometer.core.instrument.Tags
 
+const val PROJECT_ID_LABEL = "project_id"
+const val PATH_LABEL = "path"
+const val SERVICE_LABEL = "service"
+//Pipeline labels
+const val PIPELINE_ID_LABEL = "pipeline_id"
+const val REF_LABEL = "ref"
 const val STATUS_LABEL = "status"
 const val CONCLUSION_LABEL = "conclusion"
-const val REF_LABEL = "ref"
-const val PATH_LABEL = "path"
-const val PROJECT_ID_LABEL = "project_id"
-const val PIPELINE_ID_LABEL = "pipeline_id"
-const val SERVICE_LABEL = "service"
+//Merge request labels
+const val MERGE_REQUEST_ID_LABEL = "merge_request_id"
+const val MERGE_REQUEST_STATE_LABEL = "state"
+const val MERGE_REQUEST_SOURCE_LABEL = "source"
+const val MERGE_REQUEST_TARGET_LABEL = "target"
 
+
+fun List<ProjectData>.toMergeRequestMultiGauge(): List<Row<Number>> {
+    val rows = mutableListOf<Row<Number>>()
+    this.forEach { projectData ->
+        projectData.mergeRequests.forEach { mergeRequest ->
+            rows.add(
+                Row.of(
+                    Tags.of(
+                        MERGE_REQUEST_ID_LABEL,
+                        mergeRequest.id,
+                        MERGE_REQUEST_STATE_LABEL,
+                        mergeRequest.state,
+                        MERGE_REQUEST_SOURCE_LABEL,
+                        mergeRequest.sourceBranch.name,
+                        MERGE_REQUEST_TARGET_LABEL,
+                        mergeRequest.targetBranch.name
+                    ).addProjectTags(projectData.project), 1
+                )
+            )
+        }
+
+    }
+    return rows
+}
 fun List<ProjectData>.toPipelineMultiGauge(): List<Row<Number>> {
     val rows = mutableListOf<Row<Number>>()
     this.forEach { projectData ->
@@ -38,6 +67,7 @@ fun List<ProjectData>.toPipelineMultiGauge(): List<Row<Number>> {
     }
     return rows
 }
+
 
 private fun Tags.addProjectTags(project: Project): Tags {
     val tags = mutableListOf<Tag>()

@@ -30,7 +30,6 @@ class GithubPipelineMetricsExporter(
     override fun updateData(project: Project) {
         try {
             logger.info("Begin update github pipeline metrics")
-            val pipelines = mutableListOf<Pipeline>()
             githubConfiguration.branches.forEach { branch ->
                 githubService.latestPipeline(projectId = project.id, branch = branch)
                     ?.let { pipeline ->
@@ -38,14 +37,10 @@ class GithubPipelineMetricsExporter(
                             project = project,
                             pipeline = pipeline
                         )
-                        pipelines.add(pipeline)
                     }
-
             }
 
-
-            logger.info("End update gitlab pipeline metrics")
-
+            logger.info("End update github pipeline metrics")
         } catch (ex: Exception) {
             logger.error(ex.message, ex)
         }
