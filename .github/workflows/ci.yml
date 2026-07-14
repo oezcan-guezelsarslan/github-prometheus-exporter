@@ -6,6 +6,10 @@ on:
       - '*'
     tags:
       - '*'
+  pull_request:
+    branches:
+      - main
+      - develop
 
 permissions:
   contents: write
