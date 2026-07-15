@@ -1,0 +1,37 @@
+services:
+  grafana:
+    environment:
+      TZ: "Europe/Berlin"
+    container_name: grafana
+    image: grafana/grafana
+    restart: unless-stopped
+    links:
+      - prometheus
+    volumes:
+      - type: volume
+        source: grafana-data
+        target: /var/lib/grafana
+    ports:
+      - "0.0.0.0:3000:3000"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    restart: unless-stopped
+    extra_hosts:
+      - "ba.local.de:host-gateway"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - type: volume
+        source: prometheus-data
+        target: /prometheus
+      - type: bind
+        source: ./prometheus/prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+    ports:
+      - "0.0.0.0:9090:9090"
+
+volumes:
+  prometheus-data:
+  grafana-data:

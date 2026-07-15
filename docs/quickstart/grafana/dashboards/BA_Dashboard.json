@@ -1,0 +1,800 @@
+{
+  "apiVersion": "dashboard.grafana.app/v2",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "bf009823-6765-4248-a740-317b3a69225d",
+    "generation": 36,
+    "creationTimestamp": "2026-07-12T16:44:33Z",
+    "labels": {},
+    "annotations": {}
+  },
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
+            "spec": {},
+            "labels": {
+              "grafana.app/export-label": "grafana-1"
+            }
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true
+        }
+      }
+    ],
+    "cursorSync": "Off",
+    "editable": true,
+    "elements": {
+      "panel-1": {
+        "kind": "Panel",
+        "spec": {
+          "id": 1,
+          "title": "",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "spec": {
+                        "disableTextWrap": false,
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "(max(github_ci_pipeline_id{  service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"success\"}) by ( service,path) * 1) > 0 or\n(max(github_ci_pipeline_id{  service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"failure\" }) by ( service,path) * 2) > 0 or\n(max(github_ci_pipeline_id{ service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"cancelled\" }) by (  service,path) * 3) > 0 or \n(max(github_ci_pipeline_id{ service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"skipped\" }) by (  service,path) * 4) > 0\n",
+                        "format": "table",
+                        "fullMetaSearch": false,
+                        "includeNullMetadata": true,
+                        "instant": true,
+                        "legendFormat": "__auto",
+                        "range": false,
+                        "useBackend": false
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "prometheus-1",
+                        "grafana.app/export-datasource-name": "prometheus"
+                      }
+                    },
+                    "refId": "Main",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "count(github_ci_merge_request{service=~\"$SERVICE\", target=\"main\"}) by (  service,path)",
+                        "format": "table",
+                        "instant": true,
+                        "legendFormat": "__auto",
+                        "range": false
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "prometheus-1",
+                        "grafana.app/export-datasource-name": "prometheus"
+                      }
+                    },
+                    "refId": "MainMergeRequest",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "count(github_ci_merge_request{service=~\"$SERVICE\", target=\"main\",source=\"renovate/all_dependencies\"}) by (  service,path)",
+                        "format": "table",
+                        "instant": true,
+                        "legendFormat": "__auto",
+                        "range": false
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "prometheus-1",
+                        "grafana.app/export-datasource-name": "prometheus"
+                      }
+                    },
+                    "refId": "Renovate",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [
+                {
+                  "kind": "Transformation",
+                  "group": "merge",
+                  "spec": {
+                    "options": {}
+                  }
+                },
+                {
+                  "kind": "Transformation",
+                  "group": "organize",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {
+                        "Time": true,
+                        "Value": false,
+                        "Value #A": true,
+                        "Value #All": true,
+                        "Value #B": true,
+                        "Value #Branch Convention": true,
+                        "Value #Deployed": true,
+                        "Value #DevCommit": true,
+                        "Value #Develop": true,
+                        "Value #Main": false,
+                        "Value #MainCommit": true,
+                        "Value #Master": true,
+                        "Value #Release": true,
+                        "Value #TagVersion": true,
+                        "__name__": true,
+                        "environment": true,
+                        "exists": true,
+                        "exported_service": true,
+                        "group": false,
+                        "group_id": true,
+                        "host": true,
+                        "instance": true,
+                        "job": true,
+                        "kind": true,
+                        "pipeline_id": true,
+                        "project": true,
+                        "project_id": true,
+                        "ref": false,
+                        "source": true,
+                        "status": true,
+                        "subgroup": false,
+                        "version": true
+                      },
+                      "includeByName": {},
+                      "indexByName": {
+                        "Time": 0,
+                        "Value #Main": 3,
+                        "Value #MainMergeRequest": 5,
+                        "Value #Renovate": 4,
+                        "path": 1,
+                        "service": 2
+                      },
+                      "renameByName": {
+                        "Value": "Main",
+                        "Value #A": "__",
+                        "Value #All": "All",
+                        "Value #AllMergeRequests": "All MRs",
+                        "Value #Branch Convention": "Branch Convention",
+                        "Value #Deployed": "",
+                        "Value #Develop": "Develop Branch",
+                        "Value #Main": "Main Branch",
+                        "Value #MainMergeRequest": "PR to main",
+                        "Value #Master": "Master",
+                        "Value #MergeRequestsCount": "MRs to develop",
+                        "Value #Quality Gate": "Quality Gate",
+                        "Value #Release": "Release",
+                        "Value #Renovate": "Renovate Branch",
+                        "Value #SWEF": "SWEF",
+                        "Value #Tag": "Tag",
+                        "Value #ToMain": "MRs to main",
+                        "commit": "Deployed develop commit hash",
+                        "group": "Group",
+                        "path": "Project Path",
+                        "ref": "Current version",
+                        "service": "Service",
+                        "subgroup": "Subgroup"
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "Transformation",
+                  "group": "sortBy",
+                  "spec": {
+                    "options": {
+                      "fields": {},
+                      "sort": [
+                        {
+                          "field": "Service"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": false,
+                    "displayName": "Main Branch"
+                  }
+                ]
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "fixed",
+                    "fixedColor": "#91918b"
+                  },
+                  "noValue": "No data",
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "filterable": false,
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false,
+                    "wrapText": true
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Main"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "mode": "gradient",
+                          "type": "color-background"
+                        }
+                      },
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "1": {
+                                "color": "dark-red",
+                                "index": 0,
+                                "text": "Failed"
+                              },
+                              "2": {
+                                "color": "dark-green",
+                                "index": 1,
+                                "text": "Success"
+                              },
+                              "3": {
+                                "color": "#ab6100",
+                                "index": 2,
+                                "text": "Warning"
+                              },
+                              "4": {
+                                "color": "light-blue",
+                                "index": 3,
+                                "text": "Running"
+                              },
+                              "5": {
+                                "color": "transparent",
+                                "index": 4,
+                                "text": "Canceled"
+                              },
+                              "6": {
+                                "color": "semi-dark-orange",
+                                "index": 5,
+                                "text": "Pending"
+                              },
+                              "7": {
+                                "color": "super-light-blue",
+                                "index": 6,
+                                "text": "Created"
+                              }
+                            },
+                            "type": "value"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 100
+                      },
+                      {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Drill down",
+                            "url": "/d/d4b1a7fd-3eb2-4eae-b634-2e633131d9a4/bwi-gitlab-pipelines?orgId=1&var-GROUP=${__data.fields.Group}&var-SUBGROUP=${__data.fields.Subgroup}&var-SERVICE=${__data.fields.Service}&var-BRANCH=main&var-TAG=Empty"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Service"
+                    },
+                    "properties": [
+                      {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Github",
+                            "url": "https://${GITHUB_HOST}/${__data.fields[\"Project Path\"]}"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Service"
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 233
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Main Branch"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-background"
+                        }
+                      },
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "1": {
+                                "color": "dark-green",
+                                "index": 0,
+                                "text": "Success"
+                              },
+                              "2": {
+                                "color": "dark-red",
+                                "index": 1,
+                                "text": "Failure"
+                              },
+                              "3": {
+                                "color": "transparent",
+                                "index": 2,
+                                "text": "Cancelled"
+                              },
+                              "4": {
+                                "color": "text",
+                                "index": 3,
+                                "text": "Skipped"
+                              }
+                            },
+                            "type": "value"
+                          },
+                          {
+                            "options": {
+                              "match": "null",
+                              "result": {
+                                "color": "super-light-purple",
+                                "index": 4,
+                                "text": "No Data"
+                              }
+                            },
+                            "type": "special"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 149
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "PR to main"
+                    },
+                    "properties": [
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "0": {
+                                "color": "dark-green",
+                                "index": 0,
+                                "text": "0"
+                              }
+                            },
+                            "type": "value"
+                          },
+                          {
+                            "options": {
+                              "match": "null",
+                              "result": {
+                                "color": "dark-green",
+                                "index": 1,
+                                "text": "0"
+                              }
+                            },
+                            "type": "special"
+                          },
+                          {
+                            "options": {
+                              "from": 1,
+                              "result": {
+                                "color": "dark-yellow",
+                                "index": 2
+                              },
+                              "to": 2
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 3,
+                              "result": {
+                                "color": "dark-red",
+                                "index": 3
+                              },
+                              "to": 1000
+                            },
+                            "type": "range"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "mode": "gradient",
+                          "type": "gauge",
+                          "valueDisplayMode": "color"
+                        }
+                      },
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Renovate Branch"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-background"
+                        }
+                      },
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "1": {
+                                "color": "dark-orange",
+                                "index": 0,
+                                "text": "Exists"
+                              }
+                            },
+                            "type": "value"
+                          },
+                          {
+                            "options": {
+                              "match": "null",
+                              "result": {
+                                "color": "dark-green",
+                                "index": 1,
+                                "text": "Not exists"
+                              }
+                            },
+                            "type": "special"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 159
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-5": {
+        "kind": "Panel",
+        "spec": {
+          "id": 5,
+          "title": "Github last update",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "spec": {
+                        "editorMode": "code",
+                        "expr": "-max(time() - max(github_ci_metrics_timestamp))",
+                        "format": "time_series",
+                        "interval": "",
+                        "intervalFactor": 1,
+                        "legendFormat": "Pipline duration",
+                        "range": true
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "prometheus-1",
+                        "grafana.app/export-datasource-name": "prometheus"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "fieldOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ]
+                },
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "valueSize": 15
+                },
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "dtdurations",
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "No data",
+                          "color": "#808080",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -1e+23,
+                        "to": -300,
+                        "result": {
+                          "color": "dark-red",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "#299c46"
+                      },
+                      {
+                        "value": 0,
+                        "color": "#EAB839"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      }
+    },
+    "layout": {
+      "kind": "GridLayout",
+      "spec": {
+        "items": [
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 2,
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-5"
+              }
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "x": 0,
+              "y": 2,
+              "width": 24,
+              "height": 18,
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-1"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "links": [],
+    "liveNow": false,
+    "preload": false,
+    "tags": [],
+    "timeSettings": {
+      "timezone": "browser",
+      "from": "now-5m",
+      "to": "now",
+      "autoRefresh": "auto",
+      "autoRefreshIntervals": [
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "hideTimepicker": false,
+      "fiscalYearStartMonth": 0
+    },
+    "title": "BA Github Services",
+    "variables": [
+      {
+        "kind": "ConstantVariable",
+        "spec": {
+          "name": "GITHUB_HOST",
+          "query": "github.com",
+          "current": {
+            "text": "github.com",
+            "value": "github.com"
+          },
+          "hide": "hideVariable",
+          "skipUrlSync": true
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "SERVICE",
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "prometheus",
+            "version": "v0",
+            "spec": {
+              "qryType": 1,
+              "query": "label_values(github_ci_pipeline_id,service)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "labels": {
+              "grafana.app/export-label": "prometheus-1",
+              "grafana.app/export-datasource-name": "prometheus"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "label_values(github_ci_pipeline_id,service)",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
+        }
+      }
+    ]
+  }
+}
