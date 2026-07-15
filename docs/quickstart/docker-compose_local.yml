@@ -32,16 +32,6 @@ services:
     ports:
       - "0.0.0.0:9090:9090"
 
-  github-prometheus-exporter:
-    container_name: github-prometheus-exporter
-    image: ghcr.io/oezcan-guezelsarslan/github-prometheus-exporter:main
-    platform: linux/amd64
-    restart: unless-stopped
-    environment:
-      PROMETHEUS_EXPORTER_GITHUB_API_AUTHENTICATION_TOKEN: ${GITHUB_TOKEN}
-    ports:
-      - "0.0.0.0:8080:8080"
-
 volumes:
   prometheus-data:
   grafana-data:
