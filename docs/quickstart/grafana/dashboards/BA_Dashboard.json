@@ -3,7 +3,7 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "bf009823-6765-4248-a740-317b3a69225d",
-    "generation": 36,
+    "generation": 38,
     "creationTimestamp": "2026-07-12T16:44:33Z",
     "labels": {},
     "annotations": {}
@@ -509,6 +509,16 @@
                       {
                         "id": "custom.align",
                         "value": "left"
+                      },
+                      {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Github",
+                            "url": "https://github.com/${__data.fields[\"Project Path\"]}/pulls??q=is%3Apr+is%3Aopen+base%3Amain"
+                          }
+                        ]
                       }
                     ]
                   },
