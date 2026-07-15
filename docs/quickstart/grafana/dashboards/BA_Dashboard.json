@@ -3,7 +3,7 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "bf009823-6765-4248-a740-317b3a69225d",
-    "generation": 38,
+    "generation": 44,
     "creationTimestamp": "2026-07-12T16:44:33Z",
     "labels": {},
     "annotations": {}
@@ -55,7 +55,7 @@
                         "disableTextWrap": false,
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "(max(github_ci_pipeline_id{  service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"success\"}) by ( service,path) * 1) > 0 or\n(max(github_ci_pipeline_id{  service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"failure\" }) by ( service,path) * 2) > 0 or\n(max(github_ci_pipeline_id{ service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"cancelled\" }) by (  service,path) * 3) > 0 or \n(max(github_ci_pipeline_id{ service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"skipped\" }) by (  service,path) * 4) > 0\n",
+                        "expr": "(max(github_ci_pipeline_id{  service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"success\"}) by ( service,path,pipeline_id) * 1) > 0 or\n(max(github_ci_pipeline_id{  service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"failure\" }) by ( service,path,pipeline_id) * 2) > 0 or\n(max(github_ci_pipeline_id{ service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"cancelled\" }) by (  service,path,pipeline_id) * 3) > 0 or \n(max(github_ci_pipeline_id{ service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"skipped\" }) by (  service,path,pipeline_id) * 4) > 0\n",
                         "format": "table",
                         "fullMetaSearch": false,
                         "includeNullMetadata": true,
@@ -201,6 +201,7 @@
                         "commit": "Deployed develop commit hash",
                         "group": "Group",
                         "path": "Project Path",
+                        "pipeline_id": "PipelineId",
                         "ref": "Current version",
                         "service": "Service",
                         "subgroup": "Subgroup"
@@ -440,6 +441,16 @@
                       {
                         "id": "custom.width",
                         "value": 149
+                      },
+                      {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Github",
+                            "url": "https://${GITHUB_HOST}/${__data.fields[\"Project Path\"]}/actions?query=branch%3Amain"
+                          }
+                        ]
                       }
                     ]
                   },
