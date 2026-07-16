@@ -19,7 +19,7 @@
         <bouncycastle.version>1.85</bouncycastle.version>
         <start-class>de.ba.ApplicationKt</start-class>
         <projectType>application</projectType>
-    <properties>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
