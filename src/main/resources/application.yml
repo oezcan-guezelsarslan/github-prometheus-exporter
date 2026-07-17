@@ -25,17 +25,17 @@ cache:
       cron: "0 0 0 * * ?"
 
 #Rate limit configuration https://resilience4j.readme.io/docs/ratelimiter
-# Used for Gitlab https://docs.gitlab.com/ee/administration/settings/rate_limits.html
+# Used for Github https://docs.gitlab.com/ee/administration/settings/rate_limits.html
 resilience4j:
   ratelimiter:
     instances:
-      gitlab-get:
+      github-get:
         limit-for-period: 300
         limit-refresh-period: 1m
         timeout-duration: 50s
 
 
-# Gitlab prometheus exporter configuration
+# Github prometheus exporter configuration
 prometheus-exporter:
   update-duration: PT1M
   update-initial-delay-duration: PT5S
@@ -47,16 +47,13 @@ prometheus-exporter:
      # Request page size
       page-size: 10
       authentication:
-      # Gitlab user authentication token
+      # github user authentication token
         token: "${token}"
 
+    # Use ant fileset pattern
     projects:
-      - "oezcan-guezelsarslan/renovatebot"
-      - "oezcan-guezelsarslan/github-prometheus-exporter"
-      - "oezcan-guezelsarslan/javaImage"
-      - "oezcan-guezelsarslan/HelmChartDocker"
+      - "oezcan-guezelsarslan/**"
 
+    # Use ant fileset pattern
     branches:
-      - main
-      - develop
-      - renovate/all_dependencies
+      - "**"
