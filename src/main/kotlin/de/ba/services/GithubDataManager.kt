@@ -1,5 +1,6 @@
 package de.ba.services
 
+import de.ba.services.github.client.Branch
 import de.ba.services.github.client.MergeRequest
 import de.ba.services.github.client.Pipeline
 import de.ba.services.github.client.Project
@@ -28,20 +29,27 @@ class GithubDataManager {
         }
     }
 
-
-    fun getAllData() = _data.values.toList()
-
-    fun clearAll() {
-        _data.clear()
+    fun addBranch(project: Project, branch: Branch) {
+        val projectData = getOrCreateProject(project)
+        if (projectData.branches.none { it.name == branch.name }) {
+            projectData.branches.add(branch)
+        }
     }
-}
 
-data class PipelineContainer(
-    val pipeline: Pipeline,
-)
+        fun getAllData() = _data.values.toList()
 
-data class ProjectData(
-    val project: Project,
-    val pipelines: MutableList<PipelineContainer> = mutableListOf(),
-    val mergeRequests: MutableList<MergeRequest> = mutableListOf(),
-)
+        fun clearAll() {
+            _data.clear()
+        }
+    }
+
+    data class PipelineContainer(
+        val pipeline: Pipeline,
+    )
+
+    data class ProjectData(
+        val project: Project,
+        val pipelines: MutableList<PipelineContainer> = mutableListOf(),
+        val mergeRequests: MutableList<MergeRequest> = mutableListOf(),
+        val branches: MutableList<Branch> = mutableListOf(),
+    )

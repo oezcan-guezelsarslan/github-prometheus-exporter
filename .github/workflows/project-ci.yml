@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   run-build:
+    name: "Build"
     uses: "oezcan-guezelsarslan/cicdtemplates/.github/workflows/ci-maven.yml@v1.7.0"
     with:
       target-branch: ${{ github.head_ref || github.ref_name }}

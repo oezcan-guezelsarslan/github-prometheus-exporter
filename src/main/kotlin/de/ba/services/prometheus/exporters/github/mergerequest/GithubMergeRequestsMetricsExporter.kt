@@ -27,7 +27,7 @@ class GithubMergeRequestsMetricsExporter(
     override fun updateData(project: Project) {
         try {
             logger.info("Begin update github merge requests metrics")
-            githubService.mergeRequests(projectId = project.id).forEach { mergeRequest ->
+            githubService.mergeRequests(path = project.path).forEach { mergeRequest ->
                 githubDataManager.addMergeRequest(
                     project = project,
                     mergeRequest = mergeRequest

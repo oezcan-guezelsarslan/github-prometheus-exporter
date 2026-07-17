@@ -1,6 +1,8 @@
 package de.ba.services.github
 
+import de.ba.services.github.client.Branch
 import de.ba.services.github.client.GitHubClient
+import de.ba.services.github.client.Job
 import de.ba.services.github.client.MergeRequest
 import de.ba.services.github.client.Pipeline
 import de.ba.services.github.client.Project
@@ -18,29 +20,31 @@ class GithubService(
         val authToken = "Bearer ${githubConfiguration.api.authentication.token}"
         val pageSize = githubConfiguration.api.pageSize
 
-        val allRepositories = fetchAllUserProjects(authToken, pageSize)
-
-        val result = mutableListOf<Project>()
-
-        for (projectPath in githubConfiguration.projects) {
-            val matched = allRepositories.filter { it.path == projectPath }
-            result.addAll(matched)
-
-        }
-
-        return result.distinctBy { it.id }
+        return fetchAllUserProjects(authToken, pageSize)
     }
 
-    fun latestPipeline(projectId: String, branch: String): Pipeline? {
+    fun fetchAllBranches(path: String): List<Branch> {
+        val authToken = "Bearer ${githubConfiguration.api.authentication.token}"
+        return gitHubClient.branches(token = authToken, path = path)
+    }
+
+
+    fun latestPipeline(path: String, branch: String): Pipeline? {
         val token = "Bearer ${githubConfiguration.api.authentication.token}"
-        val response = gitHubClient.latestPipeline(token = token, projectId = projectId, branch = branch)
+        val response = gitHubClient.latestPipeline(token = token, path = path, branch = branch)
         return response.pipelines.firstOrNull()
     }
 
-
-    fun mergeRequests(projectId: String): List<MergeRequest> {
+    fun pipelineJobs(path: String, pipeline: Pipeline): List<Job> {
         val token = "Bearer ${githubConfiguration.api.authentication.token}"
-        val response = gitHubClient.mergeRequests(token = token, projectId = projectId)
+        val response = gitHubClient.jobs(token = token, path = path, pipelineId = pipeline.id)
+        return response.jobs
+    }
+
+
+    fun mergeRequests(path: String): List<MergeRequest> {
+        val token = "Bearer ${githubConfiguration.api.authentication.token}"
+        val response = gitHubClient.mergeRequests(token = token, path = path)
         return response.toList()
     }
 
