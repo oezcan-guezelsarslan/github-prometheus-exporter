@@ -11,6 +11,15 @@ services:
       - type: volume
         source: grafana-data
         target: /var/lib/grafana
+      - type: bind
+        source: ./grafana/provisioning/dashboards
+        target: /etc/grafana/provisioning/dashboards
+      - type: bind
+        source: ./grafana/dashboards
+        target: /var/lib/grafana/dashboards
+      - type: bind
+        source: ./grafana/provisioning/datasources
+        target: /etc/grafana/provisioning/datasources
     ports:
       - "0.0.0.0:3000:3000"
 
