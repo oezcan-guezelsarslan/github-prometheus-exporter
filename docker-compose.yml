@@ -14,13 +14,13 @@ services:
         source: grafana-data
         target: /var/lib/grafana
       - type: bind
-        source: ./grafana/provisioning/dashboards
+        source: ./development/grafana/provisioning/dashboards
         target: /etc/grafana/provisioning/dashboards
       - type: bind
-        source: ./grafana/dashboards
+        source: ./development/grafana/dashboards
         target: /var/lib/grafana/dashboards
       - type: bind
-        source: ./grafana/provisioning/datasources
+        source: ./development/grafana/provisioning/datasources
         target: /etc/grafana/provisioning/datasources
     ports:
       - "0.0.0.0:3000:3000"
@@ -38,10 +38,21 @@ services:
         source: prometheus-data
         target: /prometheus
       - type: bind
-        source: ./prometheus/prometheus.yml
+        source: ./development/prometheus/prometheus.yml
         target: /etc/prometheus/prometheus.yml
     ports:
       - "0.0.0.0:9090:9090"
+
+  github-prometheus-exporter:
+    container_name: github-prometheus-exporter
+    image: ghcr.io/oezcan-guezelsarslan/github-prometheus-exporter:main
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      PROMETHEUS_EXPORTER_GITHUB_API_AUTHENTICATION_TOKEN: ${GITHUB_TOKEN}
+      PROMETHEUS_EXPORTER_GITHUB_API_URL: ${GITHUB_API_URL}
+    ports:
+      - "0.0.0.0:8080:8080"
 
 volumes:
   prometheus-data:
