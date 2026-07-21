@@ -5,10 +5,12 @@ import de.ba.services.github.client.Project
 import io.micrometer.core.instrument.MultiGauge.Row
 import io.micrometer.core.instrument.Tag
 import io.micrometer.core.instrument.Tags
+import java.time.Duration
 
 const val PROJECT_ID_LABEL = "project_id"
 const val PATH_LABEL = "path"
 const val SERVICE_LABEL = "service"
+const val DURATION_LABEL = "duration"
 
 //Pipeline labels
 const val PIPELINE_ID_LABEL = "pipeline_id"
@@ -91,7 +93,39 @@ fun List<ProjectData>.toPipelineMultiGauge(): List<Row<Number>> {
                         pipelineContainer.pipeline.conclusion ?: pipelineContainer.pipeline.status,
                         PIPELINE_ID_LABEL,
                         pipelineContainer.pipeline.id,
+                        DURATION_LABEL,
+                        pipelineContainer.pipeline.updatedAt?.let { updatedAt ->
+                            Duration.between(pipelineContainer.pipeline.createdAt, updatedAt).toSeconds().toString()
+                        } ?: "0"
                     ).addProjectTags(projectData.project), 1
+                )
+            )
+        }
+
+    }
+    return rows
+}
+
+fun List<ProjectData>.toPipelineDurationMultiGauge(): List<Row<Number>> {
+    val rows = mutableListOf<Row<Number>>()
+    this.forEach { projectData ->
+        projectData.pipelines.forEach { pipelineContainer ->
+            rows.add(
+                Row.of(
+                    Tags.of(
+                        REF_LABEL,
+                        pipelineContainer.pipeline.branch,
+                        STATUS_LABEL,
+                        pipelineContainer.pipeline.conclusion ?: pipelineContainer.pipeline.status,
+                        PIPELINE_ID_LABEL,
+                        pipelineContainer.pipeline.id,
+                        DURATION_LABEL,
+                        pipelineContainer.pipeline.updatedAt?.let { updatedAt ->
+                            Duration.between(pipelineContainer.pipeline.createdAt, updatedAt).toSeconds().toString()
+                        } ?: "0"
+                    ).addProjectTags(projectData.project), pipelineContainer.pipeline.updatedAt?.let { updatedAt ->
+                        Duration.between(pipelineContainer.pipeline.createdAt, updatedAt).toSeconds()
+                    } ?: 0
                 )
             )
         }
@@ -144,7 +178,11 @@ fun List<ProjectData>.toJobStatusMultiGauge(): List<Row<Number>> {
                             PIPELINE_ID_LABEL,
                             job.runId,
                             REF_LABEL,
-                            pipelineContainer.pipeline.branch
+                            pipelineContainer.pipeline.branch,
+                            DURATION_LABEL,
+                            job.completedAt?.let { completedAt ->
+                                Duration.between(job.startedAt, completedAt).toSeconds().toString()
+                            } ?: 0.toString()
                         ).addProjectTags(projectData.project), 1
                     )
                 )
@@ -174,7 +212,13 @@ fun List<ProjectData>.toStepMultiGauge(): List<Row<Number>> {
                                 step.conclusion ?: step.status,
                                 PIPELINE_ID_LABEL,
                                 job.runId,
-                            ).addProjectTags(projectData.project), step.number.toLong()
+                                REF_LABEL,
+                                pipelineContainer.pipeline.branch,
+                                DURATION_LABEL,
+                                step.completedAt?.let { completedAt ->
+                                    Duration.between(step.startedAt, completedAt).toSeconds().toString()
+                                } ?: 0.toString()
+                            ).addProjectTags(projectData.project), 1
                         )
                     )
                 }
@@ -183,6 +227,7 @@ fun List<ProjectData>.toStepMultiGauge(): List<Row<Number>> {
     }
     return rows
 }
+
 
 
 private fun Tags.addProjectTags(project: Project): Tags {

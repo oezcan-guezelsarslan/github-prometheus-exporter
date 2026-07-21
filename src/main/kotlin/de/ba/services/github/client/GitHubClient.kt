@@ -1,5 +1,6 @@
 package de.ba.services.github.client
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.cloud.openfeign.FeignClient
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
+import java.time.LocalDateTime
 
 
 @FeignClient(name = "githubClient", url = "\${prometheus-exporter.github.api.url}")
@@ -45,8 +47,8 @@ interface GitHubClient {
     fun mergeRequests(
         @RequestHeader("Authorization") token: String,
         @PathVariable("id") path: String, // "open", "closed", or "all"
-        @RequestParam("per_page", defaultValue = "30") perPage: Int=30,
-        @RequestParam("page", defaultValue = "1") page: Int=1
+        @RequestParam("per_page", defaultValue = "30") perPage: Int = 30,
+        @RequestParam("page", defaultValue = "1") page: Int = 1
     ): List<MergeRequest>
 
 }
@@ -119,7 +121,22 @@ data class Pipeline(
 
     @param:JsonProperty("conclusion")
     @field:JsonProperty("conclusion")
-    val conclusion: String?
+    val conclusion: String?,
+
+
+    @param:JsonProperty("created_at")
+    @field:JsonProperty("created_at")
+    @field:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @param:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    val createdAt: LocalDateTime?,
+
+    @param:JsonProperty("updated_at")
+    @field:JsonProperty("updated_at")
+    @field:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @param:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    val updatedAt: LocalDateTime?
+
+
 ) {
     // Moved to the class body so Jackson ignores it during instantiation
     @JsonIgnore
@@ -157,11 +174,24 @@ data class Job(
     @field:JsonProperty("conclusion")
     val conclusion: String?,
 
+    @param:JsonProperty("started_at")
+    @field:JsonProperty("started_at")
+    @field:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @param:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    val startedAt: LocalDateTime?,
+
+    @param:JsonProperty("completed_at")
+    @field:JsonProperty("completed_at")
+    @field:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @param:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    val completedAt: LocalDateTime?,
+
+
     @param:JsonProperty("steps")
     @field:JsonProperty("steps")
     val steps: List<Step>,
 
-)
+    )
 
 data class Step(
 
@@ -180,6 +210,19 @@ data class Step(
     @param:JsonProperty("conclusion")
     @field:JsonProperty("conclusion")
     val conclusion: String?,
+
+    @param:JsonProperty("started_at")
+    @field:JsonProperty("started_at")
+    @field:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @param:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    val startedAt: LocalDateTime?,
+
+    @param:JsonProperty("completed_at")
+    @field:JsonProperty("completed_at")
+    @field:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @param:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    val completedAt: LocalDateTime?
+
 )
 
 

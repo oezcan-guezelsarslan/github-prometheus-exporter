@@ -1,0 +1,2001 @@
+{
+  "apiVersion": "dashboard.grafana.app/v2",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "d4b1a7fd-3eb2-4eae-b634-2e633131d9a4",
+    "namespace": "default",
+    "uid": "fac9a38c-04fb-4f81-937a-5762b954fa58",
+    "resourceVersion": "1784653470917996",
+    "generation": 138,
+    "creationTimestamp": "2026-07-16T22:24:21Z",
+    "labels": {
+      "grafana.app/deprecatedInternalID": "1716362138750976"
+    },
+    "annotations": {
+      "grafana.app/createdBy": "user:dfrwj2hvc2l8gf",
+      "grafana.app/folder": "",
+      "grafana.app/saved-from-ui": "Grafana v13.1.0 (b309c9bb3b)",
+      "grafana.app/updatedBy": "user:dfrwj2hvc2l8gf",
+      "grafana.app/updatedTimestamp": "2026-07-21T17:04:30Z"
+    }
+  },
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true
+        }
+      }
+    ],
+    "cursorSync": "Off",
+    "editable": true,
+    "elements": {
+      "panel-123": {
+        "kind": "Panel",
+        "spec": {
+          "id": 123,
+          "title": "Jobs",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "expr": "max(github_ci_job{path=~\"$PATH\", ref=~\"$BRANCH\"}) by (ref,name,pipeline_id,duration)",
+                        "format": "table",
+                        "instant": true,
+                        "interval": "",
+                        "legendFormat": "{{label_name}}"
+                      }
+                    },
+                    "refId": "D",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "(max(github_ci_job_status{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"failure|timed_out\" }) by ( ref,name,pipeline_id,duration) * 1) > 0 or\r\n(max(github_ci_job_status{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"success|completed\"}) by ( ref,name,pipeline_id,duration) * 2) > 0 \r\nor\r\n(max(github_ci_job_status{path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"cancelled|action_required\" }) by ( ref,name,pipeline_id,duration) * 3) > 0 or \r\n(max(github_ci_job_status{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"queued|requested|waiting|pending|stale|neutral\" }) by (  ref,name,pipeline_id,duration) * 4) > 0 or\r\n(max(github_ci_job_status{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"in_progress\" }) by ( ref,name,pipeline_id,duration) * 5) > 0 or\r\n(max(github_ci_job_status{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"skipped\" }) by ( ref,name,pipeline_id,duration) * 6) > 0 \r\n",
+                        "format": "table",
+                        "instant": true,
+                        "legendFormat": "{{status}}",
+                        "range": false
+                      }
+                    },
+                    "refId": "Staus",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [
+                {
+                  "kind": "Transformation",
+                  "group": "merge",
+                  "spec": {
+                    "options": {}
+                  }
+                },
+                {
+                  "kind": "Transformation",
+                  "group": "organize",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {
+                        "Time": true,
+                        "Value #A": false,
+                        "Value #B": true,
+                        "Value #C": true,
+                        "Value #D": false,
+                        "group": true,
+                        "job_name": false,
+                        "ref": false,
+                        "service": true,
+                        "subgroup": true
+                      },
+                      "includeByName": {},
+                      "indexByName": {
+                        "Time": 2,
+                        "Value #D": 3,
+                        "Value #Staus": 6,
+                        "duration": 5,
+                        "name": 4,
+                        "pipeline_id": 1,
+                        "ref": 0
+                      },
+                      "renameByName": {
+                        "Value #A": "Status",
+                        "Value #B": "Date",
+                        "Value #C": "Duration",
+                        "Value #D": "Job id",
+                        "Value #Staus": "Status",
+                        "duration": "Duration",
+                        "job_name": "Job",
+                        "kind": "Ref Kind",
+                        "name": "Name",
+                        "pipeline_id": "Pipeline id",
+                        "project": "Project",
+                        "ref": "Branch",
+                        "status": "Status"
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "Transformation",
+                  "group": "sortBy",
+                  "spec": {
+                    "options": {
+                      "fields": {},
+                      "sort": [
+                        {
+                          "field": "Status"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "enablePagination": false,
+                "showHeader": true,
+                "sortBy": []
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "left",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "filterable": false,
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Job id"
+                    },
+                    "properties": [
+                      {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Gitlab",
+                            "url": "https://${GITHUB_HOST}/${PATH}/actions/runs/${__data.fields[\"Pipeline id\"]}/job/${__data.fields[\"Job id\"]}"
+                          },
+                          {
+                            "title": "Steps",
+                            "url": "d/d4b1a7fd-3eb2-4eae-b634-2e633131d9a4/ba-github-pipelines?var-PATH=${PATH}&var-BRANCH=${BRANCH}&var-JOB_ID=${__data.fields[\"Job id\"]}&-dtab=New-tab&Branch:-${BRANCH}--dtab=Steps"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "auto"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 191
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "name"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Duration"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "dthms"
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 224
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Date"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "dtdurations"
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 200
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Status"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 256
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "mode": "gradient",
+                          "type": "color-background"
+                        }
+                      },
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "1": {
+                                "color": "dark-red",
+                                "index": 0,
+                                "text": "(01) - Failure"
+                              },
+                              "2": {
+                                "color": "dark-green",
+                                "index": 1,
+                                "text": "(02) - Success"
+                              },
+                              "3": {
+                                "color": "super-light-blue",
+                                "index": 2,
+                                "text": "(03) - Canceled"
+                              },
+                              "4": {
+                                "color": "super-light-blue",
+                                "index": 3,
+                                "text": "(06) - Pending"
+                              },
+                              "5": {
+                                "color": "blue",
+                                "index": 4,
+                                "text": "(05) - Running"
+                              },
+                              "6": {
+                                "color": "text",
+                                "index": 5,
+                                "text": "(6) - Skipped"
+                              }
+                            },
+                            "type": "value"
+                          },
+                          {
+                            "options": {
+                              "match": "null",
+                              "result": {
+                                "color": "text",
+                                "index": 6,
+                                "text": "(10) - No Data"
+                              }
+                            },
+                            "type": "special"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Pipeline id"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 183
+                      },
+                      {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Github",
+                            "url": "https://${GITHUB_HOST}/${PATH}/actions/runs/${__data.fields[\"Pipeline id\"]}"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Name"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 279
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Branch"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 108
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Duration"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-228": {
+        "kind": "Panel",
+        "spec": {
+          "id": 228,
+          "title": "Github last update",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "expr": "-max(time() - max(github_ci_metrics_timestamp))",
+                        "format": "time_series",
+                        "interval": "",
+                        "intervalFactor": 1,
+                        "legendFormat": "Pipline duration",
+                        "range": true
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "fieldOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ]
+                },
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "valueSize": 15
+                },
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "dtdurations",
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "No data",
+                          "color": "#808080",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -1e+23,
+                        "to": -300,
+                        "result": {
+                          "color": "dark-red",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "#299c46"
+                      },
+                      {
+                        "value": 0,
+                        "color": "#EAB839"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-229": {
+        "kind": "Panel",
+        "spec": {
+          "id": 229,
+          "title": "Pipeline Status",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "max by (service, path) (\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"in_progress\"}) by (service, path) + 5000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\",status=~\"queued|requested|waiting|pending|stale|neutral\"}) by (service, path) + 4000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\",status=~\"cancelled|action_required\"}) by (service, path) + 3000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\",status=~\"failure|timed_out\"}) by (service, path) + 2000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\",status=~\"success|completed\"}) by (service, path) + 1000)\n)",
+                        "format": "time_series",
+                        "instant": false,
+                        "interval": "",
+                        "intervalFactor": 1,
+                        "legendFormat": "{{status}}",
+                        "range": true
+                      }
+                    },
+                    "refId": "Pipline ID",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "fieldOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ]
+                },
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "last"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "valueSize": 15
+                },
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "No data",
+                          "color": "#808080",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 1000,
+                        "to": 1999,
+                        "result": {
+                          "text": "Success",
+                          "color": "dark-green",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "transparent"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds",
+                    "fixedColor": "#ad46ff"
+                  }
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-230": {
+        "kind": "Panel",
+        "spec": {
+          "id": 230,
+          "title": "Pipeline Duration",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "max(github_ci_pipeline_duration{path=~\"$PATH\", ref=~\"$BRANCH\"})",
+                        "format": "table",
+                        "instant": false,
+                        "interval": "",
+                        "intervalFactor": 1,
+                        "legendFormat": "{{label_name}}",
+                        "range": true
+                      }
+                    },
+                    "refId": "Pipline ID",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "fieldOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ]
+                },
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "last"
+                  ],
+                  "fields": "/^Value$/",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "valueSize": 15
+                },
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "s",
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "No data",
+                          "color": "#808080",
+                          "index": 0
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "blue"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds",
+                    "fixedColor": "#ad46ff"
+                  }
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-232": {
+        "kind": "Panel",
+        "spec": {
+          "id": 232,
+          "title": "Steps",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "expr": "max(github_ci_step{path=~\"$PATH\", ref=~\"$BRANCH\",job_id=~\"$JOB_ID\"}) by (ref,name,number,path,pipeline_id,job_id,duration)",
+                        "format": "table",
+                        "instant": true,
+                        "interval": "",
+                        "legendFormat": ""
+                      }
+                    },
+                    "refId": "D",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "(max(github_ci_step{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"failure|timed_out\",job_id=~\"$JOB_ID\" }) by ( ref,name,number,path,pipeline_id,job_id,duration) * 1) > 0 or\r\n(max(github_ci_step{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"success|completed\",job_id=~\"$JOB_ID\"}) by ( ref,name,number,path,pipeline_id,job_id,duration) * 2) > 0 \r\nor\r\n(max(github_ci_step{path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"cancelled|action_required\",job_id=~\"$JOB_ID\" }) by ( ref,name,number,path,pipeline_id,job_id,duration) * 3) > 0 or \r\n(max(github_ci_step{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"queued|requested|waiting|pending|stale|neutral\",job_id=~\"$JOB_ID\" }) by (  ref,name,number,path,pipeline_id,job_id,duration) * 4) > 0 or\r\n(max(github_ci_step{ path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"in_progress\",job_id=~\"$JOB_ID\" }) by ( ref,name,number,path,pipeline_id,job_id,duration) * 5) > 0 ",
+                        "format": "table",
+                        "instant": true,
+                        "legendFormat": "{{status}}",
+                        "range": false
+                      }
+                    },
+                    "refId": "Staus",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [
+                {
+                  "kind": "Transformation",
+                  "group": "merge",
+                  "spec": {
+                    "options": {}
+                  }
+                },
+                {
+                  "kind": "Transformation",
+                  "group": "organize",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {
+                        "Time": true,
+                        "Value #A": false,
+                        "Value #B": true,
+                        "Value #C": true,
+                        "Value #D": true,
+                        "group": true,
+                        "job_name": false,
+                        "path": true,
+                        "pipeline_id": false,
+                        "ref": true,
+                        "service": true,
+                        "subgroup": true
+                      },
+                      "includeByName": {},
+                      "indexByName": {
+                        "Time": 0,
+                        "Value #D": 4,
+                        "Value #Staus": 7,
+                        "duration": 6,
+                        "job_id": 2,
+                        "name": 5,
+                        "number": 3,
+                        "path": 9,
+                        "pipeline_id": 1,
+                        "ref": 8
+                      },
+                      "renameByName": {
+                        "Value #A": "Status",
+                        "Value #B": "Date",
+                        "Value #C": "Duration",
+                        "Value #D": "",
+                        "Value #Staus": "Status",
+                        "duration": "Duration",
+                        "job_id": "Job id",
+                        "job_name": "Job",
+                        "kind": "Ref Kind",
+                        "name": "Name",
+                        "number": "Step number",
+                        "pipeline_id": "Pipeline id",
+                        "project": "Project",
+                        "ref": "Ref Name",
+                        "status": "Status"
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "Transformation",
+                  "group": "sortBy",
+                  "spec": {
+                    "options": {
+                      "fields": {},
+                      "sort": [
+                        {
+                          "field": "Status"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "enablePagination": false,
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": false,
+                    "displayName": "Step number"
+                  }
+                ]
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "left",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "filterable": false,
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Job id"
+                    },
+                    "properties": [
+                      {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Gitlab",
+                            "url": "https://${GITHUB_HOST}/${PATH}/actions/runs/${__data.fields[\"Pipeline id\"]}/job/${__data.fields[\"Job id\"]}"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "auto"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 127
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "name"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Duration"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "dthms"
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 126
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Date"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "dtdurations"
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 200
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Status"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 334
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "mode": "gradient",
+                          "type": "color-background"
+                        }
+                      },
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "1": {
+                                "color": "dark-red",
+                                "index": 0,
+                                "text": "(01) - Failure"
+                              },
+                              "2": {
+                                "color": "dark-green",
+                                "index": 1,
+                                "text": "(02) - Success"
+                              },
+                              "3": {
+                                "color": "super-light-blue",
+                                "index": 2,
+                                "text": "(03) - Canceled"
+                              },
+                              "4": {
+                                "color": "super-light-blue",
+                                "index": 3,
+                                "text": "(06) - Pending"
+                              },
+                              "5": {
+                                "color": "blue",
+                                "index": 4,
+                                "text": "(05) - Running"
+                              }
+                            },
+                            "type": "value"
+                          },
+                          {
+                            "options": {
+                              "match": "null",
+                              "result": {
+                                "color": "text",
+                                "index": 5,
+                                "text": "(10) - No Data"
+                              }
+                            },
+                            "type": "special"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Pipeline id"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 147
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Name"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 258
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "number"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 120
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Step number"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 137
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-235": {
+        "kind": "Panel",
+        "spec": {
+          "id": 235,
+          "title": "Pipeline Id",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "max(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\"}) by (pipeline_id)",
+                        "format": "time_series",
+                        "instant": false,
+                        "interval": "",
+                        "intervalFactor": 1,
+                        "legendFormat": "{{pipeline_id}}",
+                        "range": true
+                      }
+                    },
+                    "refId": "Pipline ID",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "fieldOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ]
+                },
+                "graphMode": "area",
+                "justifyMode": "center",
+                "orientation": "horizontal",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "last"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "valueSize": 15
+                },
+                "textMode": "name",
+                "wideLayout": false
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "No data",
+                          "color": "#808080",
+                          "index": 0
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "transparent"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "fixed",
+                    "fixedColor": "blue"
+                  },
+                  "links": [
+                    {
+                      "targetBlank": true,
+                      "title": "Gitlab",
+                      "url": "https://${GITHUB_HOST}/${PATH}/actions/runs/${__field.labels.pipeline_id}"
+                    }
+                  ]
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-236": {
+        "kind": "Panel",
+        "spec": {
+          "id": 236,
+          "title": "Pipeline Status",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "max by (service, path) (\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\", status=~\"in_progress\"}) by (service, path) + 5000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\",status=~\"queued|requested|waiting|pending|stale|neutral\"}) by (service, path) + 4000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\",status=~\"cancelled|action_required\"}) by (service, path) + 3000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\",status=~\"failure|timed_out\"}) by (service, path) + 2000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\",status=~\"success|completed\"}) by (service, path) + 1000)\n)",
+                        "format": "time_series",
+                        "instant": false,
+                        "interval": "",
+                        "intervalFactor": 1,
+                        "legendFormat": "{{status}}",
+                        "range": true
+                      }
+                    },
+                    "refId": "Pipline ID",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "fieldOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ]
+                },
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "last"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "valueSize": 15
+                },
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "No data",
+                          "color": "#808080",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 1000,
+                        "to": 1999,
+                        "result": {
+                          "text": "Success",
+                          "color": "dark-green",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "transparent"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds",
+                    "fixedColor": "#ad46ff"
+                  }
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-237": {
+        "kind": "Panel",
+        "spec": {
+          "id": 237,
+          "title": "Pipeline Duration",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "max(github_ci_pipeline_duration{path=~\"$PATH\", ref=~\"$BRANCH\"})",
+                        "format": "table",
+                        "instant": false,
+                        "interval": "",
+                        "intervalFactor": 1,
+                        "legendFormat": "{{label_name}}",
+                        "range": true
+                      }
+                    },
+                    "refId": "Pipline ID",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "fieldOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ]
+                },
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "last"
+                  ],
+                  "fields": "/^Value$/",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "valueSize": 15
+                },
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "s",
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "No data",
+                          "color": "#808080",
+                          "index": 0
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "blue"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds",
+                    "fixedColor": "#ad46ff"
+                  }
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-7": {
+        "kind": "Panel",
+        "spec": {
+          "id": 7,
+          "title": "Pipeline Id",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dfrwjd3tx2vb4e"
+                      },
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "max(github_ci_pipeline{path=~\"$PATH\", ref=~\"$BRANCH\"}) by (pipeline_id)",
+                        "format": "time_series",
+                        "instant": false,
+                        "interval": "",
+                        "intervalFactor": 1,
+                        "legendFormat": "{{pipeline_id}}",
+                        "range": true
+                      }
+                    },
+                    "refId": "Pipline ID",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "fieldOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ]
+                },
+                "graphMode": "area",
+                "justifyMode": "center",
+                "orientation": "horizontal",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "last"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "valueSize": 15
+                },
+                "textMode": "name",
+                "wideLayout": false
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "No data",
+                          "color": "#808080",
+                          "index": 0
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "transparent"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "fixed",
+                    "fixedColor": "blue"
+                  },
+                  "links": [
+                    {
+                      "targetBlank": true,
+                      "title": "Gitlab",
+                      "url": "https://${GITHUB_HOST}/${PATH}/actions/runs/${__field.labels.pipeline_id}"
+                    }
+                  ]
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      }
+    },
+    "layout": {
+      "kind": "RowsLayout",
+      "spec": {
+        "rows": [
+          {
+            "kind": "RowsLayoutRow",
+            "spec": {
+              "title": "",
+              "collapse": true,
+              "hideHeader": true,
+              "layout": {
+                "kind": "GridLayout",
+                "spec": {
+                  "items": [
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 24,
+                        "height": 2,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-228"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "kind": "RowsLayoutRow",
+            "spec": {
+              "title": "Branch: $BRANCH ",
+              "collapse": true,
+              "hideHeader": false,
+              "fillScreen": false,
+              "repeat": {
+                "mode": "variable",
+                "value": "BRANCH"
+              },
+              "layout": {
+                "kind": "TabsLayout",
+                "spec": {
+                  "tabs": [
+                    {
+                      "kind": "TabsLayoutTab",
+                      "spec": {
+                        "title": "Jobs",
+                        "layout": {
+                          "kind": "GridLayout",
+                          "spec": {
+                            "items": [
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "width": 4,
+                                  "height": 2,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-7"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 4,
+                                  "y": 0,
+                                  "width": 3,
+                                  "height": 2,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-229"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 7,
+                                  "y": 0,
+                                  "width": 3,
+                                  "height": 2,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-230"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 0,
+                                  "y": 2,
+                                  "width": 23,
+                                  "height": 21,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-123"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "kind": "TabsLayoutTab",
+                      "spec": {
+                        "title": "Steps",
+                        "layout": {
+                          "kind": "GridLayout",
+                          "spec": {
+                            "items": [
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "width": 4,
+                                  "height": 2,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-235"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 4,
+                                  "y": 0,
+                                  "width": 3,
+                                  "height": 2,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-236"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 7,
+                                  "y": 0,
+                                  "width": 3,
+                                  "height": 2,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-237"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 0,
+                                  "y": 2,
+                                  "width": 24,
+                                  "height": 16,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-232"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "links": [],
+    "liveNow": false,
+    "preload": false,
+    "tags": [],
+    "timeSettings": {
+      "timezone": "browser",
+      "from": "now-5m",
+      "to": "now",
+      "autoRefresh": "",
+      "autoRefreshIntervals": [
+        "5s",
+        "15s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "hideTimepicker": false,
+      "fiscalYearStartMonth": 0
+    },
+    "title": "Github Pipelines",
+    "variables": [
+      {
+        "kind": "ConstantVariable",
+        "spec": {
+          "name": "GITHUB_HOST",
+          "query": "github.com",
+          "current": {
+            "text": "github.com",
+            "value": "github.com"
+          },
+          "hide": "hideVariable",
+          "skipUrlSync": true
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "PATH",
+          "current": {
+            "text": "oezcan-guezelsarslan/github-prometheus-exporter",
+            "value": "oezcan-guezelsarslan/github-prometheus-exporter"
+          },
+          "label": "Path",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "prometheus",
+            "version": "v0",
+            "datasource": {
+              "name": "dfrwjd3tx2vb4e"
+            },
+            "spec": {
+              "qryType": 1,
+              "query": "label_values(github_ci_pipeline,path)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "label_values(github_ci_pipeline,path)",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "BRANCH",
+          "current": {
+            "text": [
+              "main"
+            ],
+            "value": [
+              "main"
+            ]
+          },
+          "label": "Branch",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "prometheus",
+            "version": "v0",
+            "datasource": {
+              "name": "dfrwjd3tx2vb4e"
+            },
+            "spec": {
+              "qryType": 1,
+              "query": "label_values(github_ci_pipeline{path=~\"$PATH\"},ref)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "alphabeticalAsc",
+          "definition": "label_values(github_ci_pipeline{path=~\"$PATH\"},ref)",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "JOB_ID",
+          "current": {
+            "text": "All",
+            "value": [
+              "$__all"
+            ]
+          },
+          "label": "Job id",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "description": "",
+          "query": {
+            "kind": "DataQuery",
+            "group": "prometheus",
+            "version": "v0",
+            "datasource": {
+              "name": "dfrwjd3tx2vb4e"
+            },
+            "spec": {
+              "qryType": 1,
+              "query": "label_values(github_ci_job{path=\"$PATH\", ref=\"$BRANCH\"},job_id)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "label_values(github_ci_job{path=\"$PATH\", ref=\"$BRANCH\"},job_id)",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
+        }
+      }
+    ]
+  }
+}

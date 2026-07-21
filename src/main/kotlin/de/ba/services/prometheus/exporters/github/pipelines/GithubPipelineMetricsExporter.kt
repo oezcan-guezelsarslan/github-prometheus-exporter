@@ -7,6 +7,7 @@ import de.ba.services.github.configuration.GithubConfiguration
 import de.ba.services.prometheus.exporters.MetricsExporter
 import de.ba.services.utils.toJobMultiGauge
 import de.ba.services.utils.toJobStatusMultiGauge
+import de.ba.services.utils.toPipelineDurationMultiGauge
 import de.ba.services.utils.toPipelineMultiGauge
 import de.ba.services.utils.toStepMultiGauge
 import io.micrometer.core.instrument.MeterRegistry
@@ -28,6 +29,9 @@ class GithubPipelineMetricsExporter(
 
     private var githubCiPipeline: MultiGauge =
         MultiGauge.builder("github_ci_pipeline")
+            .register(meterRegistry)
+    private var githubCiPipelineDuration: MultiGauge =
+        MultiGauge.builder("github_ci_pipeline_duration")
             .register(meterRegistry)
     private var githubCiPipelineJob: MultiGauge =
         MultiGauge.builder("github_ci_job")
@@ -73,6 +77,7 @@ class GithubPipelineMetricsExporter(
 
     override fun updateMetrics() {
         githubCiPipeline.register(githubDataManager.getAllData().toPipelineMultiGauge(), true)
+        githubCiPipelineDuration.register(githubDataManager.getAllData().toPipelineDurationMultiGauge(), true)
         githubCiPipelineJob.register(githubDataManager.getAllData().toJobMultiGauge(), true)
         githubCiPipelineStep.register(githubDataManager.getAllData().toStepMultiGauge(), true)
         githubCiPipelineJobStatus.register(githubDataManager.getAllData().toJobStatusMultiGauge(), true)

@@ -3,7 +3,7 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "bf009823-6765-4248-a740-317b3a69225d",
-    "generation": 44,
+    "generation": 158,
     "creationTimestamp": "2026-07-12T16:44:33Z",
     "labels": {},
     "annotations": {}
@@ -55,7 +55,7 @@
                         "disableTextWrap": false,
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "(max(github_ci_pipeline_id{  service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"success\"}) by ( service,path,pipeline_id) * 1) > 0 or\n(max(github_ci_pipeline_id{  service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"failure\" }) by ( service,path,pipeline_id) * 2) > 0 or\n(max(github_ci_pipeline_id{ service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"cancelled\" }) by (  service,path,pipeline_id) * 3) > 0 or \n(max(github_ci_pipeline_id{ service=~\"$SERVICE\", ref=~\"main\", conclusion=~\"skipped\" }) by (  service,path,pipeline_id) * 4) > 0\n",
+                        "expr": "max by (service, path) (\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"main\", status=~\"in_progress\"}) by (service, path) + 5000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"main\",status=~\"queued|requested|waiting|pending|stale|neutral\"}) by (service, path) + 4000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"main\",status=~\"cancelled|action_required\"}) by (service, path) + 3000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"main\",status=~\"failure|timed_out\"}) by (service, path) + 2000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"main\",status=~\"success|completed\"}) by (service, path) + 1000)\n)",
                         "format": "table",
                         "fullMetaSearch": false,
                         "includeNullMetadata": true,
@@ -81,9 +81,38 @@
                       "group": "prometheus",
                       "version": "v0",
                       "spec": {
+                        "disableTextWrap": false,
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "count(github_ci_merge_request{service=~\"$SERVICE\", target=\"main\"}) by (  service,path)",
+                        "expr": "max by (service, path) (\n  (count(github_ci_pipeline{path=~\"$PATH\", status=~\"in_progress\"}) by (service, path) + 5000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\",status=~\"queued|requested|waiting|pending|stale|neutral\"}) by (service, path) + 4000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\",status=~\"cancelled|action_required\"}) by (service, path) + 3000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", status=~\"failure|timed_out\"}) by (service, path) + 2000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\",status=~\"success|completed\"}) by (service, path) + 1000)\n)",
+                        "format": "table",
+                        "fullMetaSearch": false,
+                        "includeNullMetadata": true,
+                        "instant": true,
+                        "legendFormat": "__auto",
+                        "range": false,
+                        "useBackend": false
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "prometheus-1",
+                        "grafana.app/export-datasource-name": "prometheus"
+                      }
+                    },
+                    "refId": "AllBranches",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "spec": {
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "count(github_ci_merge_request{path=~\"$PATH\", target=\"main\"}) by (  service,path)",
                         "format": "table",
                         "instant": true,
                         "legendFormat": "__auto",
@@ -106,20 +135,53 @@
                       "group": "prometheus",
                       "version": "v0",
                       "spec": {
+                        "disableTextWrap": false,
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "count(github_ci_merge_request{service=~\"$SERVICE\", target=\"main\",source=\"renovate/all_dependencies\"}) by (  service,path)",
+                        "expr": "max by (service, path) (\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"feature/.*\", status=~\"in_progress\"}) by (service, path) + 5000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"feature/.*\",status=~\"queued|requested|waiting|pending|stale|neutral\"}) by (service, path) + 4000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"feature/.*\",status=~\"cancelled|action_required\"}) by (service, path) + 3000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"feature/.*\",status=~\"failure|timed_out\"}) by (service, path) + 2000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"feature/.*\",status=~\"success|completed\"}) by (service, path) + 1000)\n)",
                         "format": "table",
+                        "fullMetaSearch": false,
+                        "includeNullMetadata": true,
                         "instant": true,
                         "legendFormat": "__auto",
-                        "range": false
+                        "range": false,
+                        "useBackend": false
                       },
                       "labels": {
                         "grafana.app/export-label": "prometheus-1",
                         "grafana.app/export-datasource-name": "prometheus"
                       }
                     },
-                    "refId": "Renovate",
+                    "refId": "FeatureBranches",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "prometheus",
+                      "version": "v0",
+                      "spec": {
+                        "disableTextWrap": false,
+                        "editorMode": "code",
+                        "exemplar": false,
+                        "expr": "max by (service, path) (\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"renovate/.*\", status=~\"in_progress\"}) by (service, path) + 5000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"renovate/.*\",status=~\"queued|requested|waiting|pending|stale|neutral\"}) by (service, path) + 4000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"renovate/.*\",status=~\"cancelled|action_required\"}) by (service, path) + 3000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"renovate/.*\",status=~\"failure|timed_out\"}) by (service, path) + 2000)\n  or\n  (count(github_ci_pipeline{path=~\"$PATH\", ref=~\"renovate/.*\",status=~\"success|completed\"}) by (service, path) + 1000)\n)",
+                        "format": "table",
+                        "fullMetaSearch": false,
+                        "includeNullMetadata": true,
+                        "instant": true,
+                        "legendFormat": "__auto",
+                        "range": false,
+                        "useBackend": false
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "prometheus-1",
+                        "grafana.app/export-datasource-name": "prometheus"
+                      }
+                    },
+                    "refId": "RenovateBranches",
                     "hidden": false
                   }
                 }
@@ -147,6 +209,7 @@
                         "Value #Deployed": true,
                         "Value #DevCommit": true,
                         "Value #Develop": true,
+                        "Value #DevelopMergeRequest": true,
                         "Value #Main": false,
                         "Value #MainCommit": true,
                         "Value #Master": true,
@@ -165,7 +228,7 @@
                         "pipeline_id": true,
                         "project": true,
                         "project_id": true,
-                        "ref": false,
+                        "ref": true,
                         "source": true,
                         "status": true,
                         "subgroup": false,
@@ -174,9 +237,15 @@
                       "includeByName": {},
                       "indexByName": {
                         "Time": 0,
-                        "Value #Main": 3,
-                        "Value #MainMergeRequest": 5,
-                        "Value #Renovate": 4,
+                        "Value #AllBranches": 3,
+                        "Value #AllBranchesCount": 11,
+                        "Value #DevelopMergeRequest": 9,
+                        "Value #FeatureBranches": 5,
+                        "Value #Main": 4,
+                        "Value #MainMergeRequest": 8,
+                        "Value #Renovate": 7,
+                        "Value #RenovateBranches": 6,
+                        "Value #RenovateCount": 10,
                         "path": 1,
                         "service": 2
                       },
@@ -184,23 +253,29 @@
                         "Value": "Main",
                         "Value #A": "__",
                         "Value #All": "All",
+                        "Value #AllBranches": "All branches",
+                        "Value #AllBranchesCount": "All branch count",
                         "Value #AllMergeRequests": "All MRs",
                         "Value #Branch Convention": "Branch Convention",
                         "Value #Deployed": "",
-                        "Value #Develop": "Develop Branch",
-                        "Value #Main": "Main Branch",
+                        "Value #Develop": "Develop branch",
+                        "Value #DevelopMergeRequest": "PR to develop",
+                        "Value #FeatureBranches": "Feature branches",
+                        "Value #Main": "Main branch",
                         "Value #MainMergeRequest": "PR to main",
                         "Value #Master": "Master",
                         "Value #MergeRequestsCount": "MRs to develop",
                         "Value #Quality Gate": "Quality Gate",
                         "Value #Release": "Release",
-                        "Value #Renovate": "Renovate Branch",
+                        "Value #Renovate": "Renovate all dependency branch",
+                        "Value #RenovateBranches": "Renovate branches",
+                        "Value #RenovateCount": "Renovate branch count",
                         "Value #SWEF": "SWEF",
                         "Value #Tag": "Tag",
                         "Value #ToMain": "MRs to main",
                         "commit": "Deployed develop commit hash",
                         "group": "Group",
-                        "path": "Project Path",
+                        "path": "Project path",
                         "pipeline_id": "PipelineId",
                         "ref": "Current version",
                         "service": "Service",
@@ -217,7 +292,7 @@
                       "fields": {},
                       "sort": [
                         {
-                          "field": "Service"
+                          "field": "Project path"
                         }
                       ]
                     }
@@ -235,12 +310,7 @@
               "options": {
                 "cellHeight": "sm",
                 "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": false,
-                    "displayName": "Main Branch"
-                  }
-                ]
+                "sortBy": []
               },
               "fieldConfig": {
                 "defaults": {
@@ -272,6 +342,7 @@
                       "reducers": []
                     },
                     "inspect": false,
+                    "wrapHeaderText": true,
                     "wrapText": true
                   }
                 },
@@ -279,7 +350,8 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "Main"
+                      "scope": "series",
+                      "options": "Main branch"
                     },
                     "properties": [
                       {
@@ -294,43 +366,63 @@
                         "value": [
                           {
                             "options": {
-                              "1": {
-                                "color": "dark-red",
-                                "index": 0,
-                                "text": "Failed"
-                              },
-                              "2": {
+                              "from": 1000,
+                              "result": {
                                 "color": "dark-green",
-                                "index": 1,
+                                "index": 0,
                                 "text": "Success"
                               },
-                              "3": {
-                                "color": "#ab6100",
-                                "index": 2,
-                                "text": "Warning"
+                              "to": 1999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 2000,
+                              "result": {
+                                "color": "dark-red",
+                                "index": 1,
+                                "text": "Failure"
                               },
-                              "4": {
-                                "color": "light-blue",
-                                "index": 3,
-                                "text": "Running"
-                              },
-                              "5": {
+                              "to": 2999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 3000,
+                              "result": {
                                 "color": "transparent",
-                                "index": 4,
+                                "index": 2,
                                 "text": "Canceled"
                               },
-                              "6": {
-                                "color": "semi-dark-orange",
-                                "index": 5,
-                                "text": "Pending"
-                              },
-                              "7": {
-                                "color": "super-light-blue",
-                                "index": 6,
-                                "text": "Created"
-                              }
+                              "to": 3999
                             },
-                            "type": "value"
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 4000,
+                              "result": {
+                                "color": "#ab6100",
+                                "index": 3,
+                                "text": "Waiting"
+                              },
+                              "to": 4999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 5000,
+                              "result": {
+                                "color": "dark-blue",
+                                "index": 4,
+                                "text": "Running"
+                              },
+                              "to": 5999
+                            },
+                            "type": "range"
                           }
                         ]
                       },
@@ -340,15 +432,20 @@
                       },
                       {
                         "id": "custom.width",
-                        "value": 100
+                        "value": 93
                       },
                       {
                         "id": "links",
                         "value": [
                           {
                             "targetBlank": true,
+                            "title": "Github",
+                            "url": "https://${GITHUB_HOST}/${__data.fields[\"Project path\"]}/actions?query=branch%3Amain"
+                          },
+                          {
+                            "targetBlank": true,
                             "title": "Drill down",
-                            "url": "/d/d4b1a7fd-3eb2-4eae-b634-2e633131d9a4/bwi-gitlab-pipelines?orgId=1&var-GROUP=${__data.fields.Group}&var-SUBGROUP=${__data.fields.Subgroup}&var-SERVICE=${__data.fields.Service}&var-BRANCH=main&var-TAG=Empty"
+                            "url": "/d/d4b1a7fd-3eb2-4eae-b634-2e633131d9a4/ba-github-pipelines?var-PATH=${__data.fields[\"Project path\"]}&var-BRANCH=main&var-JOB_ID=$__all"
                           }
                         ]
                       }
@@ -366,7 +463,7 @@
                           {
                             "targetBlank": true,
                             "title": "Github",
-                            "url": "https://${GITHUB_HOST}/${__data.fields[\"Project Path\"]}"
+                            "url": "https://${GITHUB_HOST}/${__data.fields[\"Project path\"]}"
                           }
                         ]
                       },
@@ -377,80 +474,6 @@
                       {
                         "id": "custom.width",
                         "value": 233
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "scope": "series",
-                      "options": "Main Branch"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-background"
-                        }
-                      },
-                      {
-                        "id": "mappings",
-                        "value": [
-                          {
-                            "options": {
-                              "1": {
-                                "color": "dark-green",
-                                "index": 0,
-                                "text": "Success"
-                              },
-                              "2": {
-                                "color": "dark-red",
-                                "index": 1,
-                                "text": "Failure"
-                              },
-                              "3": {
-                                "color": "transparent",
-                                "index": 2,
-                                "text": "Cancelled"
-                              },
-                              "4": {
-                                "color": "text",
-                                "index": 3,
-                                "text": "Skipped"
-                              }
-                            },
-                            "type": "value"
-                          },
-                          {
-                            "options": {
-                              "match": "null",
-                              "result": {
-                                "color": "super-light-purple",
-                                "index": 4,
-                                "text": "No Data"
-                              }
-                            },
-                            "type": "special"
-                          }
-                        ]
-                      },
-                      {
-                        "id": "custom.align",
-                        "value": "left"
-                      },
-                      {
-                        "id": "custom.width",
-                        "value": 149
-                      },
-                      {
-                        "id": "links",
-                        "value": [
-                          {
-                            "targetBlank": true,
-                            "title": "Github",
-                            "url": "https://${GITHUB_HOST}/${__data.fields[\"Project Path\"]}/actions?query=branch%3Amain"
-                          }
-                        ]
                       }
                     ]
                   },
@@ -512,9 +535,7 @@
                       {
                         "id": "custom.cellOptions",
                         "value": {
-                          "mode": "gradient",
-                          "type": "gauge",
-                          "valueDisplayMode": "color"
+                          "type": "color-text"
                         }
                       },
                       {
@@ -527,7 +548,139 @@
                           {
                             "targetBlank": true,
                             "title": "Github",
-                            "url": "https://github.com/${__data.fields[\"Project Path\"]}/pulls??q=is%3Apr+is%3Aopen+base%3Amain"
+                            "url": "https://github.com/${__data.fields[\"Project path\"]}/pulls??q=is%3Apr+is%3Aopen+base%3Amain"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 83
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Project path"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 478
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "All branches"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 82
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "applyToRow": false,
+                          "type": "color-background"
+                        }
+                      },
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      },
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "from": 1000,
+                              "result": {
+                                "color": "dark-green",
+                                "index": 0,
+                                "text": "Success"
+                              },
+                              "to": 1999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 2000,
+                              "result": {
+                                "color": "dark-red",
+                                "index": 1,
+                                "text": "Failure"
+                              },
+                              "to": 2999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 3000,
+                              "result": {
+                                "color": "transparent",
+                                "index": 2,
+                                "text": "Canceled"
+                              },
+                              "to": 3999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 4000,
+                              "result": {
+                                "color": "#ab6100",
+                                "index": 3,
+                                "text": "Waiting"
+                              },
+                              "to": 4999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 5000,
+                              "result": {
+                                "color": "dark-blue",
+                                "index": 4,
+                                "text": "Running"
+                              },
+                              "to": 5999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "match": "null",
+                              "result": {
+                                "color": "transparent",
+                                "index": 5,
+                                "text": "No data"
+                              }
+                            },
+                            "type": "special"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Github",
+                            "url": "https://${GITHUB_HOST}/${__data.fields[\"Project path\"]}/actions"
+                          },
+                          {
+                            "targetBlank": true,
+                            "title": "Drill down",
+                            "url": "/d/d4b1a7fd-3eb2-4eae-b634-2e633131d9a4/ba-github-pipelines?var-PATH=${__data.fields[\"Project path\"]}&var-BRANCH=$__all&var-JOB_ID=$__all"
                           }
                         ]
                       }
@@ -537,9 +690,13 @@
                     "matcher": {
                       "id": "byName",
                       "scope": "series",
-                      "options": "Renovate Branch"
+                      "options": "Feature branches"
                     },
                     "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 83
+                      },
                       {
                         "id": "custom.cellOptions",
                         "value": {
@@ -551,21 +708,71 @@
                         "value": [
                           {
                             "options": {
-                              "1": {
-                                "color": "dark-orange",
+                              "from": 1000,
+                              "result": {
+                                "color": "dark-green",
                                 "index": 0,
-                                "text": "Exists"
-                              }
+                                "text": "Success"
+                              },
+                              "to": 1999
                             },
-                            "type": "value"
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 2000,
+                              "result": {
+                                "color": "dark-red",
+                                "index": 1,
+                                "text": "Failure"
+                              },
+                              "to": 2999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 3000,
+                              "result": {
+                                "color": "transparent",
+                                "index": 2,
+                                "text": "Canceled"
+                              },
+                              "to": 3999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 4000,
+                              "result": {
+                                "color": "#ab6100",
+                                "index": 3,
+                                "text": "Waiting"
+                              },
+                              "to": 4999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 5000,
+                              "result": {
+                                "color": "dark-blue",
+                                "index": 4,
+                                "text": "Running"
+                              },
+                              "to": 5999
+                            },
+                            "type": "range"
                           },
                           {
                             "options": {
                               "match": "null",
                               "result": {
-                                "color": "dark-green",
-                                "index": 1,
-                                "text": "Not exists"
+                                "color": "transparent",
+                                "index": 5,
+                                "text": "No data"
                               }
                             },
                             "type": "special"
@@ -577,8 +784,113 @@
                         "value": "left"
                       },
                       {
+                        "id": "links",
+                        "value": [
+                          {
+                            "targetBlank": true,
+                            "title": "Github",
+                            "url": "https://${GITHUB_HOST}/${__data.fields[\"Project path\"]}/actions?query=%22branch%3Afeature%2F"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "Renovate branches"
+                    },
+                    "properties": [
+                      {
                         "id": "custom.width",
-                        "value": 159
+                        "value": 118
+                      },
+                      {
+                        "id": "custom.align",
+                        "value": "left"
+                      },
+                      {
+                        "id": "mappings",
+                        "value": [
+                          {
+                            "options": {
+                              "from": 1000,
+                              "result": {
+                                "color": "dark-green",
+                                "index": 0,
+                                "text": "Success"
+                              },
+                              "to": 1999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 2000,
+                              "result": {
+                                "color": "dark-red",
+                                "index": 1,
+                                "text": "Failure"
+                              },
+                              "to": 2999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 3000,
+                              "result": {
+                                "color": "transparent",
+                                "index": 2,
+                                "text": "Canceled"
+                              },
+                              "to": 3999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 4000,
+                              "result": {
+                                "color": "#ab6100",
+                                "index": 3,
+                                "text": "Waining"
+                              },
+                              "to": 4999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "from": 5000,
+                              "result": {
+                                "color": "dark-blue",
+                                "index": 4,
+                                "text": "Running"
+                              },
+                              "to": 5999
+                            },
+                            "type": "range"
+                          },
+                          {
+                            "options": {
+                              "match": "null",
+                              "result": {
+                                "color": "transparent",
+                                "index": 5,
+                                "text": "No data"
+                              }
+                            },
+                            "type": "special"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-background"
+                        }
                       }
                     ]
                   }
@@ -589,10 +901,10 @@
           "transparent": true
         }
       },
-      "panel-5": {
+      "panel-2": {
         "kind": "Panel",
         "spec": {
-          "id": 5,
+          "id": 2,
           "title": "Github last update",
           "description": "",
           "links": [],
@@ -725,7 +1037,7 @@
               "height": 2,
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-5"
+                "name": "panel-2"
               }
             }
           },
@@ -766,7 +1078,7 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "BA Github Services",
+    "title": "Github Repositories",
     "variables": [
       {
         "kind": "ConstantVariable",
@@ -784,11 +1096,12 @@
       {
         "kind": "QueryVariable",
         "spec": {
-          "name": "SERVICE",
+          "name": "PATH",
           "current": {
             "text": "",
             "value": ""
           },
+          "label": "Project path",
           "hide": "dontHide",
           "refresh": "onDashboardLoad",
           "skipUrlSync": false,
@@ -798,7 +1111,7 @@
             "version": "v0",
             "spec": {
               "qryType": 1,
-              "query": "label_values(github_ci_pipeline_id,service)",
+              "query": "label_values(github_ci_pipeline,path)",
               "refId": "PrometheusVariableQueryEditor-VariableQuery"
             },
             "labels": {
@@ -808,12 +1121,12 @@
           },
           "regex": "",
           "regexApplyTo": "value",
-          "sort": "disabled",
-          "definition": "label_values(github_ci_pipeline_id,service)",
+          "sort": "alphabeticalAsc",
+          "definition": "label_values(github_ci_pipeline,path)",
           "options": [],
           "multi": true,
           "includeAll": true,
-          "allowCustomValue": true
+          "allowCustomValue": false
         }
       }
     ]
