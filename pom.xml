@@ -10,7 +10,7 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>2.4.10</kotlin.version>
-        <cucumber.version>7.34.3</cucumber.version>
+        <cucumber.version>7.34.5</cucumber.version>
         <spring-boot.version>4.1.0</spring-boot.version>
         <spring-cloud.version>2025.1.2</spring-cloud.version>
         <tomcat.version>11.0.22</tomcat.version>
