@@ -5,7 +5,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 
-FROM ghcr.io/oezcan-guezelsarslan/javaimage:v1.0.1
+FROM ghcr.io/oezcan-guezelsarslan/javaimage:v1.2.0
 
 # Prepare directories
 RUN mkdir -p /opt/application /opt/application-conf /opt/application-log
